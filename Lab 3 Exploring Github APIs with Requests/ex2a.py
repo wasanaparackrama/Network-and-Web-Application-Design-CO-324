@@ -11,7 +11,7 @@ def github_superstars(organization:str)-> List[Tuple]:
 	url="https://api.github.com/orgs/"+organization+"/members"
 	# starting the session
 	with requests.Session() as session:
-		session.headers['Authorization'] = 'token  fd79a1a9dd3cc14ccbb399641f24bbedbb60598f'
+		session.headers['Authorization'] = 'token  '
         
         # requesting the url
 		response = session.get(url)
