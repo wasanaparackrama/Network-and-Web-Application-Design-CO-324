@@ -7,7 +7,7 @@ import requests
 #user name =wsna524
 
 print("1.b")
-response = requests.get("https://api.github.com/users/wsna524")
+response = requests.get("https://api.github.com/users/")
 
 
 print(response)
@@ -16,6 +16,6 @@ print('printing response.text')
 print(response.text)
 print("\n")
 print('printing response.headers')
-print(requests.head("https://api.github.com//users/wsna524").headers)
+print(requests.head("https://api.github.com//users/").headers)
 
 print("\n")
