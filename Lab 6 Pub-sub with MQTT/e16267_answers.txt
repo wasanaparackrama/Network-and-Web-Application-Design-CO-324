@@ -1,0 +1,98 @@
+E/16/267
+Lab 06 part-1
+
+1.There is no single “server” in a publish-subscribe system to store all tasks. Where are the tasks stored in the system?
+
+	In Publish-sub system it decouples the client that sends a message (the publisher) from the client or clients that receive the messages (the subscribers)
+	In mqqt broker it is not going store permently data like database therefore publisher, subscriber has to take the responsibilty to save data.
+	Therefore Someone(one of special client) have to listen all the topics  (ex:update , /addtask , /delete). therefore We can create an agent that listen all the 
+	events and store them. that agent can listen pub-sub using wild cards.
+	And also Here in pub-sub system it is a peer to peer system.Therefore instead of using one client to listen all publication and responding for subscribers, everybody 
+	on the network can store all the tasks and make update local memeory database.Basically here any client can become the server and can listen all the tasks in network
+	and update there state accordinly.therefor everyone will sync the changes in network then and update accordinly.
+
+2.Who should generate task IDs? How should they be generated, avoiding collisions?
+
+In client-server system clients are not going to implemente generate id.In pub-sub system there is no server ,only  have peers to publish task (adding)
+therfore to generate ids;
+	-generate the id by looking at the description(content). eg: hashing
+	 when we use structrues that relies on hashing (eg:dic or set) it generate id by looking at content.
+	 
+	-get unique subscription ID for each subscriber and  spilt up the id space which sub get one portion in id(eg:ip addressing)
+	 Then everyone has local id which is incremented each time publish a topic. So final task id will combination of subscription id and local task id
+	 
+	-simply use already exiting algorithem also.UUID(universally Unique id)is a better method which is capable of generating unique ids in distributed fashion.
+
+3.How can we represent the Task API ADD and DELETE operations in a pub-sub system like MQTT? Under what assumptions is a LIST operation (not) required?
+
+	we can create topics for each operation and when client want ADD,DELETE a task they can publish a message carrying the operation,to the relevent topic.
+    subscriber can update (add ,del) their task list according to publisher by keep listening to all topics represent the operations.
+
+
+	Another way to represent operations is include operation in the message body.To do this an additional attribute can be used which tells what the operation is. 
+
+	Requring List Operation depends on the assumptions,if every clients online everytime it's not neccesary because every client have upto date information .
+	But If client joins later or goes offline(disconnect);List operation is required because so that client can update local data store with the changes happened
+	during those disconnected period.
+
+4.When implementing the Task API operations on MQTT, comment on if, and how you would use the following MQTT features.
+
+    a.Quality of service (0, 1, 2).
+	We should use "Qos 1" as it gurantees the delivery  of message at least once.AS ,In here the message is resent at regular intervals until the receiver sends an
+	acknowledgment to the sender.Therefore the message may be deliver more than once.Though "Qos 2" gurantees the message will send once,Qos 2 uses 4-Way handshake.
+	Therefore it will be slowerest method to use.
+	Therefore Qos 1 is most suitable method to use for our Task API.
+	
+    b.Clean session flag on topic subscription.
+	Clean session flag on topic subscription must be set to "False".In this the broker will store subscription information and undelived messages for the both clients
+	So If one or more clients get disconnect for any reason,when client reconnet again,the broker will recognise the client and the client do not need to
+	subscribe to relevent topics again.
+	
+    c.Retained flag on message publication.
+	Retained flag on message publication must be set to 'True'.
+	
+	And when we consider operation wise:
+	
+	ADD operation
+		-as add operation must compute exactly once on the task list Qos for ADD operation will "Qos 2".
+		-The clean session flag on topic subscription must be set to 'false'.Because if the clients disconnect and after a client reconnet ,all the messages related to 
+		 ADD operation will be received by the client.
+	    -Retained flag on message publication must be set to 'false'.As When a new client subscribe to ADD OPERATION it is useless to receive the last message because
+		 it will be the last ADD operation but not all the ADD operation done
+		 
+	DELETE OPERATION
+		-We can use "Qos 1" for del operation because we can delete it at least once than exactly once(Qos "1") as we deleting anyway.we can del it any time.
+		-The clean session flag on topic subscription must be set to 'false'.Because if the clients disconnect and after a client reconnet ,all the messages related to 
+		 ADD operation will be received by the client.
+	    -Retained flag on message publication must be set to 'false'.As When a new client subscribe to DEL OPERATION it is useless to receive the last message because
+		 it will be the last del operation done.
+		 
+	LIST OPERATION
+		-We can use "Qos 0" as list operation does not need to compute compulsarily on the task list.
+		-The clean session flag on topic subscription must be set to "true".Because if the clients disconnect and after a client reconnet ,all the messages related to 
+		 ADD operation will not be received by the client as client do not want to receive task list on LIST OPERATION.
+	    -Retained flag on message publication must be set to "true".As When a new client subscribe to LIST OPERATION it is useful to receive the last message because
+		 it will be the last LIST operation done.
+	
+	
+
+5.Two students are arguing about how to structure topics
+
+   a. Student a suggests OPERATION/ID/STATE
+   b. Student b suggests STATE/ID/OPERATION
+   
+Either choose one of these proposals or suggest your own scheme stating your reasons.
+
+	Both are good because wildcards facility in MQtt.In wild cards it makes easy to arrange topics in hierarchical way. 
+
+
+6.Student c suggests including description in the topic as well. Argue for or against this suggestion.
+
+We can use;
+	Choice 1-add entire description can be added to the topic without body.
+	Choice 2- description to the body without putting it inside the topic.
+	
+	choice two is better because adding description to the topic will increase the size of the topic.But In MQtt there is a limit for topic.So in Mqtt protocol,maximum
+	payload size is greater than it's topic size.broker will ignore if this condition not satisfies.Therefore it is better to send data in paylaod.
+	So it's better not to include description to the topic.
+

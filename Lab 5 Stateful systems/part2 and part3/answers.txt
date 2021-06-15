@@ -1,0 +1,11 @@
+E number:E/16/267
+Name:G.T.W.Parackrama
+Lab 5 part 2 Answers
+
+2)e
+Can a task ever make an illegal transition due to a race condition during update? Explain why (not.)
+
+yes a task ever make an illegal transition due to a race condition during update
+A race condition occurs when two or more clients can access shared data and they try to change it at the same time.
+After one client change the state of a task and at the same time other client calling that task thinking the state was not changed.But the second client get a illegal
+transition because task was changed according to first clients requirements.Therefore problem will occure when more clients going to change the same tasks.

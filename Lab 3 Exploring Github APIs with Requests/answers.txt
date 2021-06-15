@@ -1,0 +1,42 @@
+Name:Parackrama G.T.W.
+E number:E/16/267
+
+
+1.
+a)
+What do you see in the response when calling the API root endpoint https://api.github.com. 
+	when calling API root end point it gives response type of json under header-content type.All API access is over HTTPS, and accessed from
+	https://api.github.com. All data is sent and received as JSON.The response body content urls which a github user can acces.
+	
+
+c)
+What is the purpose of the various X-Ratelimit- headers that you see in the response?
+	Any headers beginning with X- are custom headers, and are not included in the HTTP spec.
+	RateLimit-Limit is containing the requests quota in the time window;
+    X-Ratelimit- headers indicate how many requests a client can make in a rolling time period (typically an hour)
+    and how many of those requests the client has already spent.
+
+d)
+To access restricted operations via the API, you need to authenticate yourself first. 
+Explain what effect the following code has at the HTTP protocol level, when a request is made using that session.
+	The Session object allows you to persist certain parameters across requests.Sessions can also be used to provide default data to the request methods
+	Sessions can also be used to provide default data to the request methods. This is done by providing data to the properties on a Session object.so the request 
+	is made by using requests.Session() and authentication info is given  via headers.
+	
+2.
+c)
+Github has two versions of its API currently available: v3 and v4. How do you inform the API which version you want to use?
+	There are two stable versions of the GitHub API: the REST API v3 and the GraphQL API v4.
+	we can check the current version through every response's headers. Looking at the X-GitHub-Media-Type header.
+	To communicate with the GraphQL server, you'll need an OAuth token with the right scopes.
+	When using the REST API v3, we  have to request v3 via the Accept header
+	When using the GraphQL API v4, we  have to request v4 via the Accept header.
+	
+	
+
+d)
+Explain the difference between the two API versions. Which version is “better”? Why?
+	In version 3 (REST API) it provide large amount of information in a response,so that client have to again process the responce to grt the specific details
+which they required.
+	But in version 4( GraphQL API ) it is a query lanuage where the client can specify the information needed,so we can get the specific information which we required.
+	Depending on user requiements either v3,v4 might be suitable.Though GraphQL(v4)is later version,it is not further better than Rest API.

@@ -1,0 +1,30 @@
+Author:E/16/267
+
+1.
+e.Explain why ‘body’ has that particular type with reference to the structure of HTTP responses.
+
+In pyhthon body=response.read() .this gives url data in hex code but this variabe type is BYTE.
+Therefore body create a string using the decode() method of bytes. 
+This method takes an encoding argument, such as UTF-8, and optionally an errors argument.
+
+h.What difference do you see  if you call the method .decode(“utf-8”) on the body data received in
+(g) before printing it?
+ 
+only get b''
+The "b" stands for bytes and serves as a declaration for the type of the object you're handling
+json works with Unicode text in Python 3 (JSON format itself is defined only in terms of Unicode text) and 
+therefore you need to decode bytes received in HTTP
+response. r.headers.get_content_charset('utf-8') gets your the character encoding:
+ 
+2.
+k.What is URL encoding/decoding? Why is it necessary?
+
+
+URL encoding, also known as Percent-encoding, is a mechanism for encoding information in a Uniform Resource Identifier (URI) under certain circumstances.
+URL encoding converts characters into a format that can be transmitted over the Internet.
+URL decoding is decode the encoded url.
+The URL representation of characters may differ from the characters in the code. In other words, there is a specific grammar that
+defines how URLs are assembled. Special characters that are used in forming a URL need to be encoded so that they do not cause unexpected results.
+These characters (&, ?, for example) are given special meaning to function in a certain way. Therefore, they cannot be used in a different context. 
+Decode is useful for decoding the URL to get the string representation of the URL before it was encoded for manipulation/other functions in the application.
+

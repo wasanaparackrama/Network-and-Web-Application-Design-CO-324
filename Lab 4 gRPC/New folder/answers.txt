@@ -1,0 +1,52 @@
+E number:E/16/267
+Name:G.T.W.Parackrama
+Lab 4 part B Answers
+
+1.State whether each Task API operation is idempotent along with an explanation
+
+An idempotent method means that the result of a successful performed request is independent of the number of times it is executed.
+here In Task API, an idempotent operation is one that has no additional effect if it is called more than once with the same input parameters.
+For example, removing an item from a set can be considered an idempotent operation on the set.
+addTask Task API  are used to create a new resource on server. So when you invoke the same task request N times,
+you will have N new tasks on the server. So, addTask is not idempotent.
+delTask and ListTasks methods NEVER change the resource state on server. They are purely for retrieving the resource representation or meta data at that point of time.
+So invoking multiple requests will not have any write operation on server, delTask and ListTasks are idempotent.
+
+3.Why is it necessary to implement the checks stated above?
+
+If an error occurs, gRPC returns one of its error status codes instead, with an optional string error message that provides
+further details about what happened in the method.Error information is available to gRPC clients in all supported languages.
+
+6.What happens if editTask is called on the same task by two clients simultaneously? Suggest a possible solution.
+
+One's editting could be loss happen when editTask is called on the same task by two clients simultaneously.
+Using synchronisation methods in the implementation for add task and but it is not enough we have reduce writing conflict in edit task.we can
+implement methods using threads.A thread is the right abstraction. It allows the developer to focus on programming the interaction with a single client 
+and then to lift this interaction to multiple clients by simply forking many instances of the single-client interaction in separate threads.So using threads
+we can overcome this issue.
+
+7.There is a subtle error in the provided implementation of addTask called a data race. How can we fix this problem?
+
+addTask is carrying sub-operations or steps.As example creating newId(incrementing the last id).When multiple addTask calls are made and id incrementing
+step of off addTask operations  happens concurrently,There for 2 or more operations might get the same value as the id variable accesseing by those two threads 
+at the same time.then only one client's task will be saved.therefore other client's data will be lost.
+To solve this, mutual exclusion is used.In mutual exclusion one thread is allowed to access a variable(ex:id) at a time.so that second variable will be waiting
+(as variable is loacked) until id is updated in first thread.By using this there is no data loss.
+
+
+8.(Exam hint) A student writes the following code to prevent the data race in addTask. Explain why this does not ensure mutual exclusion.
+
+becasuse in the code ,here Lock is created inside the implementation.Therefore when a thead is creating in addTask,each thread will have their own lock 
+variable.There will be no use of this as the other threads do not access a given thread anyway.
+To make this as mutual exclusion.a class variable of a Lock can be used (using self.mutex in the implementation).It is a common Lock that will be shared by all 
+the threads.Therefore using this implementation critical section will be locked and data race is prevented
+
+10.Does code in listTasks need to be in a critical section? Explain why (not?)
+
+listTasks do not modify the server and it returns tasks list.So in listTasks concurrently call the multiple threads will be just reading 
+from the server without making any modifications.So Concurrency doesn't create errors in listTasks.
+But,sometime depend on the implementation can cause concurrently.One thread will be modify server while another thread is trying to read from
+the server.As they are mutual exclusive.listTask canbe return false data.
+Therefore  depend on the implementation, listTasks need to be in a critical section
+
+
