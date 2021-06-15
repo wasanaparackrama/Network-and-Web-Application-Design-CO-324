@@ -9,7 +9,7 @@ import requests
 #1)e
 print('1).e')
 with requests.Session()as session:
-	session.headers['Authorization']='token  fd79a1a9dd3cc14ccbb399641f24bbedbb60598f '
+	session.headers['Authorization']='token  '
 	url='https://api.github.com/user/repos'
 	#request body
 	body={'name':'test3', 'description':'some test repo'}
