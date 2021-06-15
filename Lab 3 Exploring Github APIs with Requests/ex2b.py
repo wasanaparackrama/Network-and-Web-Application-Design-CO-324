@@ -17,7 +17,7 @@ print(winner[0])
 
 # watch the repo of winner
 with requests.Session() as session:
-    session.headers["Authorization"] = 'token  fd79a1a9dd3cc14ccbb399641f24bbedbb60598f'
+    session.headers["Authorization"] = 'token  '
 url_4=winner[0][0]+"/subscription"
 session.put(url_4)
 
